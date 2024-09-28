@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
+import { useNavigation } from "expo-router";
 
 interface OnboardingScreenProps {
   onGetStarted: () => void;
@@ -19,6 +20,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   const featureAnim2 = useRef(new Animated.Value(0)).current;
   const featureAnim3 = useRef(new Animated.Value(0)).current;
   const buttonAnim = useRef(new Animated.Value(1)).current;
+
+  // Navigation hook
+  const navigation = useNavigation();
 
   useEffect(() => {
     Animated.stagger(300, [
@@ -132,10 +136,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
       <Animated.View style={{ transform: [{ scale: buttonAnim }] }}>
         <TouchableOpacity
           style={styles.getStartedButton}
-          onPress={onGetStarted}
+          onPress={() => navigation.navigate("MainPage")}
         >
-          <Text style={styles.buttonText}>      Get Started</Text>
-          <Image style={styles.voiceIcon} />
+          <Text style={styles.buttonText}>  Get Started</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>
