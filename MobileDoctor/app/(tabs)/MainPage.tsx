@@ -14,7 +14,7 @@ const MainPage: React.FC<MainPageProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>How can we assist you today?</Text>
+      <Text style={styles.title}>How Can We Assist You Today?</Text>
       <Text style={styles.tipText}>Choose an option to get started!</Text>
       <View style={styles.optionContainer}>
         <TouchableOpacity style={styles.optionButton} onPress={onAskQuestion}>
