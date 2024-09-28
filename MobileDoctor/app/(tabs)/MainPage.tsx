@@ -15,6 +15,7 @@ const MainPage: React.FC<MainPageProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>How can we assist you today?</Text>
+      <Text style={styles.tipText}>Choose an option to get started!</Text>
       <View style={styles.optionContainer}>
         <TouchableOpacity style={styles.optionButton} onPress={onAskQuestion}>
           <Image
@@ -26,7 +27,7 @@ const MainPage: React.FC<MainPageProps> = ({
 
         <TouchableOpacity style={styles.optionButton} onPress={onUseVoice}>
           <Image source={require("./mic.png")} style={styles.optionIcon} />
-          <Text style={styles.optionText}>Ask a Question via text</Text>
+          <Text style={styles.optionText}>Ask a Question via voice</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.optionButton} onPress={onAddPicture}>
@@ -57,6 +58,12 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  tipText: {
+    fontSize: 16,
+    color: "#004d40",
+    marginBottom: 20,
+    textAlign: "center",
   },
   optionButton: {
     flexDirection: "row",
