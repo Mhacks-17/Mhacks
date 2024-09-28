@@ -1,71 +1,221 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import { useNavigation } from "expo-router";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { GOOGLE_PLACES_API_KEY } from '@app/(tabs)/.env';
-
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+interface OnboardingScreenProps {
+  onGetStarted: () => void;
 }
 
+const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
+  onGetStarted,
+}) => {
+  const featureAnim1 = useRef(new Animated.Value(0)).current;
+  const featureAnim2 = useRef(new Animated.Value(0)).current;
+  const featureAnim3 = useRef(new Animated.Value(0)).current;
+  const buttonAnim = useRef(new Animated.Value(1)).current;
+
+  // Navigation hook
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    Animated.stagger(300, [
+      Animated.timing(featureAnim1, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(featureAnim2, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(featureAnim3, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [featureAnim1, featureAnim2, featureAnim3]);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(buttonAnim, {
+          toValue: 1.1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [buttonAnim]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image source={require("./stethescope.png")} style={styles.logo} />
+      </View>
+      <Text style={styles.title}>Welcome to Mobile Doctor</Text>
+      <Text style={styles.subtitle}>Your Pocket Health Assistant</Text>
+
+      <View style={styles.featuresContainer}>
+        <Animated.View
+          style={[
+            styles.featureItem,
+            {
+              opacity: featureAnim1,
+              transform: [
+                {
+                  translateY: featureAnim1.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <Text style={styles.featureBullet}>•</Text>
+          <Text style={styles.featureText}>
+            Check your symptoms with text or voice input
+          </Text>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.featureItem,
+            {
+              opacity: featureAnim2,
+              transform: [
+                {
+                  translateY: featureAnim2.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <Text style={styles.featureBullet}>•</Text>
+          <Text style={styles.featureText}>Find local doctors near you</Text>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.featureItem,
+            {
+              opacity: featureAnim3,
+              transform: [
+                {
+                  translateY: featureAnim3.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <Text style={styles.featureBullet}>•</Text>
+          <Text style={styles.featureText}>Get medication reminders</Text>
+        </Animated.View>
+      </View>
+
+      <Animated.View style={{ transform: [{ scale: buttonAnim }] }}>
+        <TouchableOpacity
+          style={styles.getStartedButton}
+          onPress={() => navigation.navigate("MainPage")}
+        >
+          <Text style={styles.buttonText}>  Get Started</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#e0f7fa",
+    padding: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  logoContainer: {
+    marginBottom: 40,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  logo: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#006064",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 20,
+    color: "#00796b",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  featuresContainer: {
+    alignSelf: "stretch",
+    marginBottom: 30,
+    paddingHorizontal: 30,
+  },
+  featureItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  featureBullet: {
+    fontSize: 24,
+    color: "#004d40",
+    marginRight: 10,
+  },
+  featureText: {
+    fontSize: 18,
+    color: "#004d40",
+  },
+  getStartedButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#00796b",
+    paddingVertical: 15,
+    paddingHorizontal: 17,
+    borderRadius: 35,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 19,
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  voiceIcon: {
+    width: 24,
+    height: 24,
+    tintColor: "#fff",
   },
 });
+
+export default OnboardingScreen;
