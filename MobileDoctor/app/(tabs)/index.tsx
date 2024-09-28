@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#00796b",
-    paddingVertical: 15,
-    paddingHorizontal: 17,
+    paddingVertical: 13,
+    paddingHorizontal: 15,
     borderRadius: 35,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
@@ -207,9 +207,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 19,
+    fontSize: 17,
     fontWeight: "bold",
-    marginRight: 10,
+    marginRight: 9,
   },
   voiceIcon: {
     width: 24,

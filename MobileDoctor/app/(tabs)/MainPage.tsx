@@ -16,16 +16,22 @@ const MainPage: React.FC<MainPageProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>How can we assist you today?</Text>
       <View style={styles.optionContainer}>
-        {/* Ask a Question Option */}
         <TouchableOpacity style={styles.optionButton} onPress={onAskQuestion}>
-          <Text style={styles.optionText}>Ask a Question</Text>
+          <Image
+            source={require("./questions.png")}
+            style={styles.optionIcon}
+          />
+          <Text style={styles.optionText}>Ask a Question via text</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.optionButton} onPress={onUseVoice}>
-          <Text style={styles.optionText}>Use Voice</Text>
+          <Image source={require("./mic.png")} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Ask a Question via text</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.optionButton} onPress={onAddPicture}>
-          <Text style={styles.optionText}>Add Picture</Text>
+          <Image source={require("./pic.png")} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Add Picture </Text>
         </TouchableOpacity>
       </View>
     </View>
