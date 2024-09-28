@@ -4,6 +4,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { GOOGLE_PLACES_API_KEY } from '@app/(tabs)/.env';
 
 export default function HomeScreen() {
   return (
