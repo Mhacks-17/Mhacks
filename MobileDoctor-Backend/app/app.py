@@ -5,7 +5,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
-from api.gemini import identify 
+import gemini
 
 # Load environment variables from a .env file (for storing sensitive keys)
 load_dotenv()
@@ -40,7 +40,7 @@ async def upload_image(file: UploadFile = File(...)):
             "Body": contents  # Use the file contents directly
         }
     )
-    return identify(result)
+    return gemini.identify(result)
 
 # Nearby doctors API using Google Places API
 @app.get("/api/nearby-doctors")
