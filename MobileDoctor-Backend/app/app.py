@@ -5,7 +5,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
-from ..api.gemini import identify 
+from api.gemini import identify 
 
 # Load environment variables from a .env file (for storing sensitive keys)
 load_dotenv()

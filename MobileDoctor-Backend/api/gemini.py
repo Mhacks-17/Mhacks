@@ -46,10 +46,8 @@ json = [
   }
 ]
 
-def identify():
+def identify(json: str):
     top = json[0]["model_predictions"]["predictions"]["top"]
     response = chat.send_message(f"Acting like a doctor, can you tell me that you just see a {top}, don't tell me your not a doctor, don't ask a question to me, just two sentence")
 
     return response.text
-
-print(identify())
