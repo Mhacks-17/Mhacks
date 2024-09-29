@@ -9,6 +9,10 @@ import gemini
 import logging
 import base64
 
+import os
+
+from pydantic import BaseModel
+
 # Load environment variables from a .env file (for storing sensitive keys)
 load_dotenv()
 
@@ -26,6 +30,13 @@ client = InferenceHTTPClient(
 
 # Load Google Places API key
 GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY', 'YOUR_GOOGLE_PLACES_API_KEY')  # You can define this in .env
+
+genai.configure(api_key="AIzaSyBT1BBESDIclpUAVYeaLpqhlvIX5VObkl4")
+
+# Initialize the model and chat
+model = genai.GenerativeModel("gemini-1.5-flash")
+chat = model.start_chat()
+
 
 @app.get("/")
 async def read_root():
@@ -62,6 +73,17 @@ async def upload_image(file: UploadFile = File(...)):
     except Exception as e:
         logging.error(f"Error during workflow execution: {str(e)}")
         raise HTTPException(status_code=500, detail="An error occurred while processing the image.")
+    
+class chats(BaseModel):
+    chat: str
+
+@app.post("/chat")
+async def small_talk(request: chats):
+    text = request.chat
+    response = chat.send_message(
+        f"Like how a doctor would respond, don't say that you need to give medical advice and just provide general advice: {text}"
+    )
+    return {"text": response.text}
 
 # Nearby doctors API using Google Places API
 @app.get("/api/nearby-doctors")
