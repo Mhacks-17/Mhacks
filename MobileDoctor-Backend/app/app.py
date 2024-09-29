@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Query
+from fastapi import FastAPI, File, UploadFile, Query, HTTPException
 from inference_sdk import InferenceHTTPClient
 from fastapi.responses import JSONResponse
 import requests
@@ -6,12 +6,17 @@ import os
 from dotenv import load_dotenv
 import google.generativeai as genai
 import gemini
+import logging
+import base64
 
 # Load environment variables from a .env file (for storing sensitive keys)
 load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 # InferenceHTTPClient configuration
 client = InferenceHTTPClient(
@@ -33,14 +38,30 @@ async def read_item(item_id: int):
 @app.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
     contents = await file.read()  # Read the uploaded file
-    result = client.run_workflow(
-        workspace_name="music-5umoc",
-        workflow_id="custom-workflow",
-        images={
-            "Body": contents  # Use the file contents directly
-        }
-    )
-    return gemini.identify(result)
+
+    # Check file size (in bytes)
+    if len(contents) > 10 * 1024 * 1024:  # 10MB limit
+        raise HTTPException(status_code=400, detail="File size exceeds 10MB limit.")
+
+    # Convert image contents to base64 if required by the API
+    encoded_image = base64.b64encode(contents).decode('utf-8')
+
+    # Process the file with your workflow
+    try:
+        logging.info("Running workflow...")
+        result = client.run_workflow(
+            workspace_name="music-5umoc",
+            workflow_id="custom-workflow",
+            images={
+                "Body": encoded_image  # Use the base64 encoded image
+            }
+        )
+        logging.info("Workflow completed successfully.")
+        
+        return {"result": gemini.identify(result)}  # Return the result directly
+    except Exception as e:
+        logging.error(f"Error during workflow execution: {str(e)}")
+        raise HTTPException(status_code=500, detail="An error occurred while processing the image.")
 
 # Nearby doctors API using Google Places API
 @app.get("/api/nearby-doctors")
