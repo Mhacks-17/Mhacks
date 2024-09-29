@@ -48,6 +48,75 @@ async def read_item(item_id: int):
 
 @app.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
+    try:
+        contents = await file.read()  # Read the uploaded file
+
+        # Check file size (in bytes)
+        if len(contents) > 10 * 1024 * 1024:  # 10MB limit
+            raise HTTPException(status_code=400, detail="File size exceeds 10MB limit.")
+
+        # Convert image contents to base64 if required by the API
+        encoded_image = base64.b64encode(contents).decode('utf-8')
+
+        logging.info("Running workflow...")
+        
+        try:
+            result = client.run_workflow(
+                workspace_name="music-5umoc",
+                workflow_id="custom-workflow",
+                images={
+                    "Body": encoded_image  # Use the base64 encoded image
+                }
+            )
+        except Exception as workflow_error:
+            logging.error(f"Error during workflow execution: {str(workflow_error)}")
+            raise HTTPException(status_code=500, detail=f"Workflow error: {str(workflow_error)}")
+
+        logging.info("Workflow completed successfully.")
+        
+        try:
+            identified_result = gemini.identify(result)
+        except Exception as gemini_error:
+            logging.error(f"Error in gemini.identify: {str(gemini_error)}")
+            raise HTTPException(status_code=500, detail=f"Gemini identification error: {str(gemini_error)}")
+        
+        return {"result": identified_result}
+    
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        logging.error(f"Unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+    contents = await file.read()  # Read the uploaded file
+
+    # Check file size (in bytes)
+    if len(contents) > 10 * 1024 * 1024:  # 10MB limit
+        raise HTTPException(status_code=400, detail="File size exceeds 10MB limit.")
+
+    # Convert image contents to base64 if required by the API
+    encoded_image = base64.b64encode(contents).decode('utf-8')
+
+    # Process the file with your workflow
+    try:
+        logging.info("Running workflow...")
+        
+        # Replace 'run_workflow' with the correct method if needed
+        result = client.run_workflow(
+            workspace_name="music-5umoc",
+            workflow_id="custom-workflow",
+            images={
+                "Body": encoded_image  # Use the base64 encoded image
+            }
+        )
+        
+        logging.info("Workflow completed successfully.")
+        
+        return {"result": gemini.identify(result)}  # Return the result directly
+    
+    except Exception as e:
+        logging.error(f"Error during workflow execution: {str(e)}")  # Log the error
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")  # Return detailed error
+
     contents = await file.read()  # Read the uploaded file
 
     # Check file size (in bytes)
