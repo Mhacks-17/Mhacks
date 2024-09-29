@@ -1,3 +1,4 @@
 /MobileDoctor-Backend/app/__pycache__
 /venv
 /.env
+/test.py

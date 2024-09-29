@@ -62,3 +62,4 @@ async def get_nearby_doctors(lat: float = Query(...), lng: float = Query(...)):
         return JSONResponse(content=data['results'], status_code=200)
     except requests.exceptions.RequestException as e:
         return JSONResponse(content={'error': str(e)}, status_code=500)
+
