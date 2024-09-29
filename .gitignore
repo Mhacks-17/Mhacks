@@ -2,3 +2,9 @@
 /venv
 /.env
 /test.py
+/MobileDoctor/app/node_modules
+/MobileDoctor/ios
+/MobileDoctor/node_modules
+./node_modules
+/MobileDoctor/.expo
+/.venv
