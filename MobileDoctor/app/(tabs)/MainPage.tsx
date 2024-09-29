@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import * as Location from "expo-location";
 
 interface MainPageProps {
   onAskQuestion: () => void;
@@ -12,10 +13,38 @@ const MainPage: React.FC<MainPageProps> = ({
   onUseVoice,
   onAddPicture,
 }) => {
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc.coords);
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>How can we assist you today?</Text>
+      <Text style={styles.title}>How Can We Assist You Today?</Text>
       <Text style={styles.tipText}>Choose an option to get started!</Text>
+
+      <Text style={styles.locationText}>
+        {errorMsg
+          ? errorMsg
+          : location
+          ? `Latitude: ${location.latitude}, Longitude: ${location.longitude}`
+          : "Getting your location..."}
+      </Text>
+
       <View style={styles.optionContainer}>
         <TouchableOpacity style={styles.optionButton} onPress={onAskQuestion}>
           <Image
@@ -32,7 +61,7 @@ const MainPage: React.FC<MainPageProps> = ({
 
         <TouchableOpacity style={styles.optionButton} onPress={onAddPicture}>
           <Image source={require("./pic.png")} style={styles.optionIcon} />
-          <Text style={styles.optionText}>Add Picture </Text>
+          <Text style={styles.optionText}>Add Picture</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -54,16 +83,22 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: "center",
   },
-  optionContainer: {
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   tipText: {
     fontSize: 16,
     color: "#004d40",
     marginBottom: 20,
     textAlign: "center",
+  },
+  locationText: {
+    fontSize: 16,
+    color: "#00796b",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  optionContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   optionButton: {
     flexDirection: "row",
