@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
+import { uploadImage } from "./backendApi.tsx";
 
 interface MainPageProps {
   onAskQuestion: () => void;
@@ -38,10 +39,31 @@ const MainPage: React.FC<MainPageProps> = ({ onAskQuestion, onUseVoice }) => {
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-    if (!result.canceled) {
-      setImageUri(result.uri);
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      setImageUri(uri);
+
+      
+      const file = {
+        uri: uri,
+        type: "image/jpeg", 
+        name: `photo_${Date.now()}.jpg`, 
+      };
+
+      try {
+        const uploadResponse = await uploadImage(file);
+        console.log("Upload successful:", uploadResponse);
+      } catch (error) {
+        console.error("Upload failed:", error);
+        alert("Upload failed! Please try again.");
+      }
     }
   };
 
@@ -49,15 +71,6 @@ const MainPage: React.FC<MainPageProps> = ({ onAskQuestion, onUseVoice }) => {
     <View style={styles.container}>
       <Text style={styles.title}>How Can We Assist You Today?</Text>
       <Text style={styles.tipText}>Choose an option to get started!</Text>
-
-      {/* Display Location */}
-      <Text style={styles.locationText}>
-        {errorMsg
-          ? errorMsg
-          : location
-          ? `Latitude: ${location.latitude}, Longitude: ${location.longitude}`
-          : "Getting your location..."}
-      </Text>
 
       {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
 
@@ -105,12 +118,6 @@ const styles = StyleSheet.create({
   tipText: {
     fontSize: 16,
     color: "#004d40",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  locationText: {
-    fontSize: 16,
-    color: "#00796b",
     marginBottom: 20,
     textAlign: "center",
   },

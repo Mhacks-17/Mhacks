@@ -66,7 +66,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
       <View style={styles.logoContainer}>
         <Image source={require("./stethescope.png")} style={styles.logo} />
       </View>
-      <Text style={styles.title}>Welcome to Mobile Doctor</Text>
+      <Text style={styles.title}>Welcome to Doc On Call</Text>
       <Text style={styles.subtitle}>Your Pocket Health Assistant</Text>
 
       <View style={styles.featuresContainer}>
