@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Query, HTTPException
 from inference_sdk import InferenceHTTPClient
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
 from dotenv import load_dotenv
@@ -18,6 +19,14 @@ load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI()
+
+app.add_middleware(
+       CORSMiddleware,
+       allow_origins=["*"],  # Adjust this to specify allowed origins
+       allow_credentials=True,
+       allow_methods=["*"],
+       allow_headers=["*"],
+   )
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -54,7 +63,7 @@ async def upload_image(file: UploadFile = File(...)):
         # Check file size (in bytes)
         if len(contents) > 10 * 1024 * 1024:  # 10MB limit
             raise HTTPException(status_code=400, detail="File size exceeds 10MB limit.")
-
+        
         # Convert image contents to base64 if required by the API
         encoded_image = base64.b64encode(contents).decode('utf-8')
 

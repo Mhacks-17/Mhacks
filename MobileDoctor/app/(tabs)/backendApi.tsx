@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://35.3.247.253:8000";
+const API_URL = "http://35.0.128.74:8000";
 
 
 export const uploadImage = async (file: File) => {
