@@ -88,7 +88,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
         >
           <Text style={styles.featureBullet}>•</Text>
           <Text style={styles.featureText}>
-            Check your symptoms with text or voice input
+            Check your symptoms with text, voice input, or a picture
           </Text>
         </Animated.View>
 
